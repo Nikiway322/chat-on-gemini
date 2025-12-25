@@ -16,22 +16,22 @@ class ChatOnlyBot:
         """Команда /start"""
         await update.message.reply_text(
             "🤖 Чат-бот с Gemini AI\n"
-            "Просто напиши /chat [ваше сообщение]\n\n"
-            "Например: /chat расскажи анекдот\n\n"
+            "Просто напиши /q [ваше сообщение]\n\n"
+            "Например: /q расскажи анекдот\n\n"
             "🔑 Автоматически переключаю ключи при лимитах"
         )
     
     async def chat(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        """Единственная команда /chat"""
+        """Единственная команда /q"""
         if not context.args:
-            await update.message.reply_text("Напиши: /chat [твой вопрос]")
+            await update.message.reply_text("Напиши: /q [твой вопрос]")
             return
         
         user_text = " ".join(context.args)
         await update.message.chat.send_action(action="typing")
         
         # Пробуем получить ответ
-        response = await self.get_gemini_response(user_text)
+        response = await self.get_gemini_response(user_text + ". Дай сжатый и конкретный ответ.")
         
         if response:
             await update.message.reply_text(response[:4000])
@@ -79,10 +79,10 @@ def main():
     
     # Только 2 команды
     app.add_handler(CommandHandler("start", bot.start))
-    app.add_handler(CommandHandler("chat", bot.chat))
+    app.add_handler(CommandHandler("q", bot.chat))
     
     # Запускаем
-    print("🤖 Чат-бот запущен! Только /chat команда")
+    print("🤖 Чат-бот запущен! Только /q команда")
     app.run_polling()
 
 if __name__ == "__main__":
